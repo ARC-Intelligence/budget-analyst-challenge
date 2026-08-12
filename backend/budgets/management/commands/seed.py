@@ -291,6 +291,7 @@ class Command(BaseCommand):
                 f"{row['budget']:>14,.2f}{variance:>16,.2f}{abs(variance):>16,.2f}"
             )
         self.stdout.write("")
+        self.stdout.write("Zero-budget pairs with booked actuals")
         for row in pair_rows:
             if row["budget"] == 0:
                 variance = row["actual"] - row["budget"]

@@ -1,5 +1,4 @@
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+import { API_BASE } from "@/lib/api";
 
 export type ChatEvent =
   | { type: "text_delta"; text: string }
@@ -57,10 +56,13 @@ export async function streamChat(
       const { done, value } = await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
-      buffer = flushFrames(buffer, onEvent, false);
+      buffer = flushFrames(buffer, onEvent);
     }
     buffer += decoder.decode();
-    flushFrames(buffer, onEvent, true);
+    buffer = flushFrames(buffer, onEvent);
+    if (buffer.trim()) {
+      dispatchFrame(buffer, onEvent);
+    }
   } catch (err) {
     if (isAbortError(err)) return;
     onEvent({
@@ -72,17 +74,13 @@ export async function streamChat(
 
 function flushFrames(
   buffer: string,
-  onEvent: (e: ChatEvent) => void,
-  flushTrailing: boolean
+  onEvent: (e: ChatEvent) => void
 ): string {
   const normalized = buffer.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
   const parts = normalized.split("\n\n");
-  const rest = flushTrailing ? "" : (parts.pop() ?? "");
+  const rest = parts.pop() ?? "";
   for (const frame of parts) {
     dispatchFrame(frame, onEvent);
-  }
-  if (flushTrailing && rest.trim()) {
-    dispatchFrame(rest, onEvent);
   }
   return rest;
 }
