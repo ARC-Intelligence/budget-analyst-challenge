@@ -61,6 +61,7 @@ dependencies = [
 dev = [
     { name = "pytest" },
     { name = "pytest-django" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -76,6 +77,7 @@ requires-dist = [
 dev = [
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "pytest-django", specifier = ">=4.14.0" },
+    { name = "uvicorn", specifier = ">=0.52.1" },
 ]
 
 [[package]]

@@ -21,7 +21,7 @@ The first start migrates and seeds the database automatically. Backend listens o
 Backend:
 
 ```bash
-cd backend && uv sync && uv run python manage.py migrate && uv run python manage.py seed && uv run --with uvicorn uvicorn config.asgi:application --reload
+cd backend && uv sync && uv run python manage.py migrate && uv run python manage.py seed && uv run uvicorn config.asgi:application --reload
 ```
 
 Frontend:
