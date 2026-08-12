@@ -158,12 +158,26 @@ class Command(BaseCommand):
         parser.add_argument(
             "--answer-key",
             action="store_true",
-            help="Print a reviewer answer key to stdout after seeding.",
+            help="Print a reviewer answer key to stdout.",
+        )
+        parser.add_argument(
+            "--reset",
+            action="store_true",
+            help="Delete the existing scenario and regenerate it.",
         )
 
     def handle(self, *args, **options):
-        scenario = self.seed()
-        self.stdout.write(f"{scenario.name}: {scenario.line_items.count()} line items")
+        scenario = Scenario.objects.filter(name=SCENARIO_NAME).first()
+        if options["reset"] or scenario is None or not scenario.line_items.exists():
+            scenario = self.seed()
+            self.stdout.write(
+                f"{scenario.name}: {scenario.line_items.count()} line items"
+            )
+        else:
+            self.stdout.write(
+                f"{scenario.name} already seeded "
+                f"({scenario.line_items.count()} line items); use --reset to regenerate"
+            )
         if options["answer_key"]:
             self.print_answer_key(scenario)
 

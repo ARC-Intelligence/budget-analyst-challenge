@@ -16,6 +16,8 @@ docker compose up
 
 The first start migrates and seeds the database automatically. Backend listens on [http://localhost:8000](http://localhost:8000), frontend on [http://localhost:3000](http://localhost:3000).
 
+Note: the containers use their own dependency volumes, so to add a package run it inside the container, e.g. `docker compose exec frontend pnpm add <pkg>` or `docker compose exec backend uv add <pkg>`.
+
 ### Native
 
 Backend:

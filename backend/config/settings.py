@@ -78,7 +78,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
 }
 
-CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(",")
+CORS_ALLOWED_ORIGINS = [
+    origin.strip() for origin in env("CORS_ALLOWED_ORIGINS").split(",")
+]
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"

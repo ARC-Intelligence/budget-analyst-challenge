@@ -83,6 +83,11 @@ export function ScenarioTable({
         setError(null);
       })
       .catch((err: unknown) => {
+        if (page > 1) {
+          // The page may no longer exist (e.g. after deleting its last row).
+          setPage((p) => p - 1);
+          return;
+        }
         setError(
           err instanceof Error ? err.message : "Failed to load line items"
         );

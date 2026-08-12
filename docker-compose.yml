@@ -6,7 +6,9 @@ services:
     volumes:
       - ./backend:/app
       - /app/.venv
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-mini}
