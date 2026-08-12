@@ -14,6 +14,8 @@ env = environ.Env(
     CORS_ALLOWED_ORIGINS=(str, "http://localhost:3000"),
     OPENAI_MODEL=(str, "gpt-5-mini"),
 )
+# Read .env from the repo root (and backend/ as a fallback).
+environ.Env.read_env(BASE_DIR.parent / ".env")
 environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
