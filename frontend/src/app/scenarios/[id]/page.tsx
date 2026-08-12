@@ -2,8 +2,8 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { Chat } from "@/components/Chat";
 import { ScenarioTable } from "@/components/ScenarioTable";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchScenario, type Scenario } from "@/lib/api";
 
@@ -33,32 +33,33 @@ export default function ScenarioPage({
         >
           ← Back
         </Link>
-        {error ? (
-          <p className="mt-3 text-sm text-destructive">{error}</p>
-        ) : !scenario ? (
-          <div className="mt-3 space-y-2">
-            <Skeleton className="h-7 w-48" />
-            <Skeleton className="h-4 w-96 max-w-full" />
-          </div>
-        ) : (
-          <div className="mt-3">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {scenario.name}
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {scenario.description}
-            </p>
-          </div>
-        )}
-      </div>
-      <div className="grid flex-1 items-start gap-6 lg:grid-cols-3">
-        <div className="min-w-0 lg:col-span-2">
-          <ScenarioTable scenarioId={id} />
+        <div className="mt-3 flex items-start justify-between gap-4">
+          {error ? (
+            <p className="text-sm text-destructive">{error}</p>
+          ) : !scenario ? (
+            <div className="space-y-2">
+              <Skeleton className="h-7 w-48" />
+              <Skeleton className="h-4 w-96 max-w-full" />
+            </div>
+          ) : (
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {scenario.name}
+              </h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {scenario.description}
+              </p>
+            </div>
+          )}
+          <Button
+            nativeButton={false}
+            render={<Link href={`/scenarios/${id}/chat`} />}
+          >
+            Open chat
+          </Button>
         </div>
-        <div className="lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:self-start">
-          <Chat scenarioId={id} />
-        </div>
       </div>
+      <ScenarioTable scenarioId={id} />
     </div>
   );
 }

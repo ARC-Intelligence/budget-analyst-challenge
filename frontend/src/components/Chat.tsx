@@ -88,8 +88,7 @@ export function Chat({ scenarioId }: { scenarioId: number | string }) {
   }
 
   return (
-    <div className="flex h-[28rem] flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 lg:h-full">
-      <div className="border-b px-4 py-3 text-sm font-medium">Chat</div>
+    <div className="flex h-full flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 ? (
           <p className="text-sm text-muted-foreground">
