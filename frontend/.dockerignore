@@ -1,0 +1,6 @@
+node_modules
+.next
+.venv
+db.sqlite3
+__pycache__
+.env
