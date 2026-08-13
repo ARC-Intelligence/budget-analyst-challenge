@@ -4,7 +4,6 @@ from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db.models import Sum
 
 from budgets.models import LineItem, Scenario
 
@@ -156,11 +155,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--answer-key",
-            action="store_true",
-            help="Print a reviewer answer key to stdout.",
-        )
-        parser.add_argument(
             "--reset",
             action="store_true",
             help="Delete the existing scenario and regenerate it.",
@@ -178,8 +172,6 @@ class Command(BaseCommand):
                 f"{scenario.name} already seeded "
                 f"({scenario.line_items.count()} line items); use --reset to regenerate"
             )
-        if options["answer_key"]:
-            self.print_answer_key(scenario)
 
     def seed(self):
         Scenario.objects.filter(name=SCENARIO_NAME).delete()
@@ -254,72 +246,3 @@ class Command(BaseCommand):
         verify_stories(items)
         LineItem.objects.bulk_create(items)
         return scenario
-
-    def print_answer_key(self, scenario):
-        booked = scenario.line_items.filter(
-            month__lte=BOOKED_THROUGH, actual_amount__isnull=False
-        )
-        self.stdout.write("REVIEWER ANSWER KEY — do not distribute")
-        self.stdout.write("")
-        self.stdout.write("(a) Budget vs actual by department (Jan–Aug)")
-        self.stdout.write(
-            f"{'Department':<22}{'Budget':>16}{'Actual':>16}{'Variance':>16}{'Var %':>10}"
-        )
-
-        dept_rows = list(
-            booked.values("department")
-            .annotate(budget=Sum("budget_amount"), actual=Sum("actual_amount"))
-            .order_by("department")
-        )
-        dept_rows.sort(
-            key=lambda row: row["actual"] - row["budget"], reverse=True
-        )
-        for row in dept_rows:
-            variance = row["actual"] - row["budget"]
-            pct = (
-                f"{float(variance / row['budget'] * 100):.2f}%"
-                if row["budget"]
-                else "n/a"
-            )
-            self.stdout.write(
-                f"{row['department']:<22}{row['budget']:>16,.2f}"
-                f"{row['actual']:>16,.2f}{variance:>16,.2f}{pct:>10}"
-            )
-
-        self.stdout.write("")
-        self.stdout.write("(b) Top 10 |variance| by department + category")
-        self.stdout.write(
-            f"{'Department':<22}{'Category':<24}{'Budget':>14}{'Variance':>16}{'|Var|':>16}"
-        )
-        pair_rows = list(
-            booked.values("department", "category")
-            .annotate(budget=Sum("budget_amount"), actual=Sum("actual_amount"))
-        )
-        pair_rows.sort(
-            key=lambda row: abs(row["actual"] - row["budget"]), reverse=True
-        )
-        for row in pair_rows[:10]:
-            variance = row["actual"] - row["budget"]
-            self.stdout.write(
-                f"{row['department']:<22}{row['category']:<24}"
-                f"{row['budget']:>14,.2f}{variance:>16,.2f}{abs(variance):>16,.2f}"
-            )
-        self.stdout.write("")
-        self.stdout.write("Zero-budget pairs with booked actuals")
-        for row in pair_rows:
-            if row["budget"] == 0:
-                variance = row["actual"] - row["budget"]
-                self.stdout.write(
-                    f"{row['department']:<22}{row['category']:<24}"
-                    f"{row['budget']:>14,.2f}{variance:>16,.2f}{abs(variance):>16,.2f}"
-                )
-
-        self.stdout.write("")
-        self.stdout.write("(c) Outlier rows with notes")
-        for item in scenario.line_items.exclude(notes=""):
-            self.stdout.write(
-                f"{item.department} / {item.category} / {item.month:%Y-%m}  "
-                f"budget={item.budget_amount:,.2f}  "
-                f"actual={item.actual_amount:,.2f}  "
-                f"notes={item.notes}"
-            )
