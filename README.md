@@ -43,6 +43,17 @@ Open [http://localhost:3000](http://localhost:3000), open the scenario, and conf
 | SSE client | `frontend/src/lib/chatStream.ts` |
 | Chat UI | `frontend/src/components/Chat.tsx` |
 | Scenario table | `frontend/src/components/ScenarioTable.tsx` |
+| Your decisions | `DECISIONS.md` |
+
+## The data
+
+One scenario, FY2026 Operating Budget: eight departments, a dozen-ish spend categories each, one line item per department × category × month for Jan–Dec 2026, with `budget_amount` and `actual_amount`.
+
+Actuals are booked as months close. Not every department has closed the same month, so `actual_amount` is `null` for months a department hasn't booked yet. Some line items carry a short `notes` string.
+
+Line items also have a free-form JSON `metadata` field. Different teams fill it in differently, so keys, nesting, and coverage vary by department and many rows have none. Treat it as what it is: whatever the team happened to record.
+
+`uv run python manage.py seed --reset` reloads the scenario from the bundled snapshot.
 
 ## Environment variables
 
@@ -56,7 +67,7 @@ Django also honors `DEBUG`, `DJANGO_SECRET_KEY`, and `CORS_ALLOWED_ORIGINS`.
 
 ## The challenge
 
-Task instructions are provided separately.
+Task instructions are provided separately. Record your decisions in `DECISIONS.md` as you go; a few bullets per heading is enough.
 
 ## Tests
 

@@ -25,6 +25,7 @@ class LineItem(models.Model):
         max_digits=12, decimal_places=2, null=True, blank=True
     )
     notes = models.CharField(max_length=500, blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
 
     class Meta:
         ordering = ["department", "category", "month"]

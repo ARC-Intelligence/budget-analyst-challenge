@@ -78,6 +78,7 @@ def test_line_item_create(api_client, scenario):
     assert body["department"] == "Sales"
     assert body["category"] == "Travel"
     assert body["budget_amount"] == "8000.00"
+    assert body["metadata"] == {}
     assert LineItem.objects.filter(scenario=scenario).count() == 1
 
 
@@ -94,6 +95,20 @@ def test_line_item_patch(api_client, line_item):
     assert body["notes"] == "Correction"
     line_item.refresh_from_db()
     assert line_item.actual_amount == Decimal("10100.00")
+
+
+@pytest.mark.django_db
+def test_line_item_patch_metadata(api_client, line_item):
+    response = api_client.patch(
+        f"/api/line-items/{line_item.id}/",
+        {"metadata": {"vendor": "Acme", "tags": ["a"]}},
+        format="json",
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["metadata"] == {"vendor": "Acme", "tags": ["a"]}
+    line_item.refresh_from_db()
+    assert line_item.metadata == {"vendor": "Acme", "tags": ["a"]}
 
 
 @pytest.mark.django_db
