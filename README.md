@@ -67,7 +67,7 @@ Django also honors `DEBUG`, `DJANGO_SECRET_KEY`, and `CORS_ALLOWED_ORIGINS`.
 
 ## The challenge
 
-Task instructions are provided separately. Record your decisions in `DECISIONS.md` as you go; a few bullets per heading is enough.
+Task instructions are provided separately. Record your decisions in `DECISIONS.md` as you go; short is fine.
 
 ## Tests
 
