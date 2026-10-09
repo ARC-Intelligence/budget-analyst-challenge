@@ -12,7 +12,7 @@ env = environ.Env(
     DEBUG=(bool, True),
     DJANGO_SECRET_KEY=(str, "dev-only-insecure-key"),
     CORS_ALLOWED_ORIGINS=(str, "http://localhost:3000"),
-    OPENAI_MODEL=(str, "gpt-6-luna"),
+    OPENAI_MODEL=(str, "gpt-5-mini"),
 )
 # Read .env from the repo root (and backend/ as a fallback).
 environ.Env.read_env(BASE_DIR.parent / ".env")

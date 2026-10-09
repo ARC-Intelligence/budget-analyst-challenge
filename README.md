@@ -60,7 +60,7 @@ Line items also have a free-form JSON `metadata` field. Different teams fill it 
 | Variable | Where | Notes |
 | --- | --- | --- |
 | `OPENAI_API_KEY` | backend | Required for chat. The OpenAI SDK reads it from the environment. |
-| `OPENAI_MODEL` | backend | Optional. Defaults to `gpt-6-luna`. |
+| `OPENAI_MODEL` | backend | Optional. Defaults to `gpt-5-mini`. |
 | `NEXT_PUBLIC_API_BASE_URL` | frontend | Optional. Defaults to `http://localhost:8000`. |
 
 Django also honors `DEBUG`, `DJANGO_SECRET_KEY`, and `CORS_ALLOWED_ORIGINS`.
